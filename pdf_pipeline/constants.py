@@ -1,0 +1,6 @@
+DATE = 'Data'
+PURCHASE = 'Compra'
+VALUE = 'Valor'
+PAYMENT = 'Pagamento'
+REFUND = 'Estorno'
+CATEGORY = 'Categoria'
