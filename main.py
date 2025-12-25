@@ -11,7 +11,7 @@ import tempfile
 import logging
 
 # Constants
-BQ_TABLE = ""
+BQ_TABLE = "PowerBI-Drive.controle_gastos.fatura_nu"
 
 def download_pdf(bucket_name, file_name):
     storage_client = storage.Client()
