@@ -1,5 +1,4 @@
 from flask import Flask, request, jsonify
-import os
 import warnings
 import pandas as pd
 import cleaner
