@@ -1,9 +1,10 @@
+import os
 import warnings
 import pandas as pd
-import os
 import cleaner
 import constants as const
 import classifier
+import datefixer as dfix
 
 def main_function(event, context):
 
@@ -30,6 +31,18 @@ def main_function(event, context):
         # Remove linhas de pagamento de entre as linhas de compras
         dataframe = cleaner.remove_lines(dataframe, ~is_payment_line)
         dataframe[const.CATEGORY] = dataframe[const.PURCHASE].apply(classifier.classify_purchases) # É facil 'estender' os objetos em python
+
+        # Adiciona nome do arquivo de origem
+        dataframe[const.SOURCEFILE] = pdf
+
+        # Adiciona data de fechamento da fatura
+        dataframe[const.INVOICECLOSE] = (
+                                            dataframe[const.SOURCEFILE]
+                                            .str.rsplit('_', n=1).str[1]
+                                            .str.split('.').str[0]
+                                        )
+
+        dfix.add_purchase_date_column(dataframe)
 
         print(dataframe.head())
 
