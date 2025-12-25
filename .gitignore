@@ -1,0 +1,26 @@
+# Ambientes virtuais
+venv/
+.env/
+
+# Cache e temporários
+__pycache__/
+*.pyc
+*.pyo
+
+# Jupyter / Colab
+.ipynb_checkpoints/
+
+# Logs
+*.log
+
+# Arquivos de sistema
+.DS_Store
+Thumbs.db
+
+# Credenciais
+*.env
+credentials.json
+
+# Pastas
+faturas_nu_csv/
+faturas_nu_pdf/
