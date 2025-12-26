@@ -40,7 +40,7 @@ def add_purchase_date_column(df):
     df.loc[filtro, 'Data'] = df.loc[filtro, 'Data'] - pd.DateOffset(years=1)
 
     df['Mes Compra'] = df['Data'].dt.month
-    df['Semana Compra'] = df['Data'].dt.isocalendar().week
+    df['Semana Compra'] = df['Data'].dt.isocalendar().week.astype(int)
 
     df.drop(columns=['Data_Compra_Aux', 'Dias_Compra'],inplace=True)
 
