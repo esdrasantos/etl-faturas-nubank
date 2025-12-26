@@ -9,6 +9,9 @@ from google.cloud import storage, bigquery
 import tempfile
 import logging
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 # Constants
 BQ_TABLE = "PowerBI-Drive.controle_gastos.fatura_nu"
 
@@ -17,8 +20,9 @@ def download_pdf(bucket_name, file_name):
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(file_name)
 
-    tmp = tempfile.NameTemporaryFile(suffix='.pdf')
+    tmp = tempfile.NamedTemporaryFile(suffix='.pdf', delete=False)
     blob.download_to_filename(tmp.name)
+    logger.info(f"PDF baixado em {tmp.name}")
 
     return tmp.name
 
@@ -76,7 +80,6 @@ def load_bigquery_table(df, table_id):
     job.result()
 
 app = Flask(__name__)
-logging.basicConfig(level=logging.INFO)
 
 @app.route("/ping", methods=["GET"])
 def ping():
@@ -90,34 +93,38 @@ def ping():
 def process():
 
     try:
-        data = request.get_json()
-        df = pipeline(
-            data['bucket'],
-            data['name']
-        )
-    
+        data = request.get_json(silent=True)
+
+        if not data:
+            return jsonify({
+                "status": "error",
+                "message": "JSON inválido ou ausente"
+            }), 400
+
+        bucket = data.get("bucket")
+        name = data.get("name")
+
+        if not bucket or not name:
+            return jsonify({
+                "status": "error",
+                "message": "Campos 'bucket' e 'name' são obrigatórios"
+            }), 400
+
+        logger.info(f"Processando arquivo {name} do bucket {bucket}")
+
+        df = pipeline(bucket, name)
         df[const.PROCDATE] = pd.Timestamp.utcnow()
-        
+
         load_bigquery_table(df, BQ_TABLE)
-        
+
         return jsonify({"status": "ok"}), 200
-        
+
     except Exception as e:
-        
-        logger.exception(f"Erro em /process")
-        
+        logger.exception("Erro em /process")
         return jsonify({
             "status": "error",
             "message": str(e)
         }), 500
-        
-    # For testing locally
-    '''
-    logging.info("Bucket:", data['bucket'])
-    logging.info("Arquivo:", data['bucket'])
-
-    return jsonify({"status": "ok", "df":f"{df.head()}"}), 200
-    '''
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
