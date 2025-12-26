@@ -5,7 +5,7 @@ import cleaner
 import constants as const
 import classifier
 import datefixer as dfix
-from google.cloud import storage, bigquery, abort
+from google.cloud import storage, bigquery
 import tempfile
 import logging
 
@@ -76,8 +76,7 @@ def load_bigquery_table(df, table_id):
     job.result()
 
 app = Flask(__name__)
-
-#logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO)
 
 @app.route("/ping", methods=["GET"])
 def ping():
@@ -90,30 +89,27 @@ def ping():
 @app.route("/process", methods=["POST"])
 def process():
 
-    print(">>> Entrou no endpoint /process")
-
     try:
-        
         data = request.get_json()
-        print(">>> JSON recebido:", data)
-
         df = pipeline(
             data['bucket'],
             data['name']
         )
+    
         df[const.PROCDATE] = pd.Timestamp.utcnow()
-        print(">>> Pipeline executado")
-
+        
         load_bigquery_table(df, BQ_TABLE)
-        print(">>> Dados inseridos no BigQuery")
-
+        
         return jsonify({"status": "ok"}), 200
         
     except Exception as e:
         
-        print(">>> EXCEPTION CAPTURADA <<<")
-        traceback.print_exc() 
-        abort(500)
+        logger.exception(f"Erro em /process")
+        
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
         
     # For testing locally
     '''
