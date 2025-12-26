@@ -30,11 +30,21 @@ def add_purchase_date_column(df):
     df['Data_Compra_Aux'] = df.Ano + "-"\
                             + df['N Mes'].astype(str) + "-"\
                             + df.Dia
+
     dtdiff = pd.to_datetime(df[const.INVOICECLOSE])-pd.to_datetime(df['Data_Compra_Aux'])
     df['Dias_Compra'] = dtdiff.dt.days
     df['Data'] = pd.to_datetime(df['Data_Compra_Aux'])
+
     filtro = df['Dias_Compra'] < 0
     df.loc[filtro, 'Data'] = df.loc[filtro, 'Data'] - pd.DateOffset(years=1)
+
     df['Mes Compra'] = df['Data'].dt.month
     df['Semana Compra'] = df['Data'].dt.isocalendar().week
+
     df.drop(columns=['Data_Compra_Aux', 'Dias_Compra'],inplace=True)
+    
+    df[const.INVOICECLOSE] = pd.to_datetime(
+        df[const.INVOICECLOSE],
+        format="%Y-%m-%d",
+        errors="raise"
+    )
