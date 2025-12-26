@@ -88,19 +88,29 @@ def ping():
 
 @app.route("/process", methods=["POST"])
 def process():
+
+    try:
+        data = request.get_json()
+        df = pipeline(
+            data['bucket'],
+            data['name']
+        )
     
-    data = request.get_json()
-    df = pipeline(
-        data['bucket'],
-        data['name']
-    )
-
-    df[const.PROCDATE] = pd.Timestamp.utcnow()
-
-    load_bigquery_table(df, BQ_TABLE)
-
-    return 'OK', 200
-
+        df[const.PROCDATE] = pd.Timestamp.utcnow()
+        
+        load_bigquery_table(df, BQ_TABLE)
+        
+        return jsonify({"status": "ok"}), 200
+        
+    except Exception as e:
+        
+        logger.exception(f"Erro em /process")
+        
+        return jsonify({
+            "status": "error",
+            "message": str(e)
+        }), 500
+        
     # For testing locally
     '''
     logging.info("Bucket:", data['bucket'])
