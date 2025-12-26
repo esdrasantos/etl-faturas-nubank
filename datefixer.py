@@ -3,10 +3,11 @@ import constants as const
 
 def add_purchase_date_column(df):
 
-    dia_mes_ano = df['Data'].str.split(' ')
+    dia_mes = df['Data'].str.split(' ')
     
-    df['Dia'] = dia_mes_ano.str[0].str.strip()
-    df['Mes'] = dia_mes_ano.str[1].str.strip()
+    df['Dia'] = dia_mes.str[0].str.strip()
+    df['Mes'] = dia_mes.str[1].str.strip()
+    
     df['Ano'] = df[const.INVOICECLOSE].str\
                 .split('-').str[0]\
                 .str.strip()
@@ -28,7 +29,7 @@ def add_purchase_date_column(df):
     df['N Mes'] = df['Mes'].map(meses)
 
     df['Data_Compra_Aux'] = df.Ano + "-"\
-                            + df['N Mes'].astype(str) + "-"\
+                            + df['Mes'].astype(str) + "-"\
                             + df.Dia
 
     dtdiff = pd.to_datetime(df[const.INVOICECLOSE])-pd.to_datetime(df['Data_Compra_Aux'])
