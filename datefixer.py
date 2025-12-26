@@ -7,7 +7,7 @@ def add_purchase_date_column(df):
     
     df['Dia'] = dia_mes_ano.str[0].str.strip()
     df['Mes'] = dia_mes_ano.str[1].str.strip()
-    df['Ano'] = df['Fech. Fatura'].str\
+    df['Ano'] = df[const.INVOICECLOSE].str\
                 .split('-').str[0]\
                 .str.strip()
     meses = {
