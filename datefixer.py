@@ -43,10 +43,6 @@ def add_purchase_date_column(df):
 
     df.drop(columns=['Data_Compra_Aux', 'Dias_Compra'],inplace=True)
 
-    df[const.INVOICECLOSE] = pd.to_datetime(
-        df[const.INVOICECLOSE],
-        format="%Y-%m-%d",
-        errors="raise"
-    )
+    df[const.INVOICECLOSE] = pd.to_datetime(df[const.INVOICECLOSE])
     df["Dia"] = df["Dia"].astype(str).str.zfill(2)
     df["Mes"] = df["Mes"].astype(str).str.zfill(2)
