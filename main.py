@@ -86,8 +86,8 @@ def ping():
         "message": "Cloud Run is up"
     }), 200
 
-@app.route("/", methods=["POST"])
-def handler():
+@app.route("/process", methods=["POST"])
+def process():
     
     data = request.get_json()
     df = pipeline(
