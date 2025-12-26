@@ -12,18 +12,18 @@ def add_purchase_date_column(df):
                 .split('-').str[0]\
                 .str.strip()
     meses = {
-        "JAN": 1,
-        "FEV": 2,
-        "MAR": 3,
-        "ABR": 4,
-        "MAI": 5,
-        "JUN": 6,
-        "JUL": 7,
-        "AGO": 8,
-        "SET": 9,
-        "OUT": 10,
-        "NOV": 11,
-        "DEZ": 12
+        "JAN": "01",
+        "FEV": "02",
+        "MAR": "03",
+        "ABR": "04",
+        "MAI": "05",
+        "JUN": "06",
+        "JUL": "07",
+        "AGO": "08",
+        "SET": "09",
+        "OUT": "10",
+        "NOV": "11",
+        "DEZ": "12"
     }
 
     df['N Mes'] = df['Mes'].map(meses)
@@ -45,5 +45,3 @@ def add_purchase_date_column(df):
     df.drop(columns=['Data_Compra_Aux', 'Dias_Compra'],inplace=True)
 
     df[const.INVOICECLOSE] = pd.to_datetime(df[const.INVOICECLOSE])
-    df["Dia"] = df["Dia"].astype(str).str.zfill(2)
-    df["Mes"] = df["Mes"].astype(str).str.zfill(2)
