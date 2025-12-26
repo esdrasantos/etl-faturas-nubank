@@ -78,6 +78,14 @@ def load_bigquery_table(df, table_id):
 app = Flask(__name__)
 logging.basicConfig(level=logging.INFO)
 
+@app.route("/ping", methods=["GET"])
+def ping():
+    return jsonify({
+        "status": "ok",
+        "service": "etl-faturas-nubank",
+        "message": "Cloud Run is up"
+    }), 200
+
 @app.route("/", methods=["POST"])
 def handler():
     
