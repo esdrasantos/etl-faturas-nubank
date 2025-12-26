@@ -7,6 +7,7 @@ import classifier
 import datefixer as dfix
 from google.cloud import storage, bigquery, abort
 import tempfile
+import logging
 
 # Constants
 BQ_TABLE = "PowerBI-Drive.controle_gastos.fatura_nu"
@@ -74,8 +75,9 @@ def load_bigquery_table(df, table_id):
 
     job.result()
 
-
 app = Flask(__name__)
+
+#logging.basicConfig(level=logging.INFO)
 
 @app.route("/ping", methods=["GET"])
 def ping():
@@ -112,6 +114,14 @@ def process():
         print(">>> EXCEPTION CAPTURADA <<<")
         traceback.print_exc() 
         abort(500)
+        
+    # For testing locally
+    '''
+    logging.info("Bucket:", data['bucket'])
+    logging.info("Arquivo:", data['bucket'])
+
+    return jsonify({"status": "ok", "df":f"{df.head()}"}), 200
+    '''
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
