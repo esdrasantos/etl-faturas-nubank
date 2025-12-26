@@ -29,7 +29,7 @@ def add_purchase_date_column(df):
     df['N Mes'] = df['Mes'].map(meses)
 
     df['Data_Compra_Aux'] = df.Ano + "-"\
-                            + df['Mes'].astype(str) + "-"\
+                            + df['N Mes'].astype(str) + "-"\
                             + df.Dia
 
     dtdiff = pd.to_datetime(df[const.INVOICECLOSE])-pd.to_datetime(df['Data_Compra_Aux'])
