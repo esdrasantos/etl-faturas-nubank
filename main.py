@@ -13,7 +13,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Constants
-BQ_TABLE = "PowerBI-Drive.controle_gastos.fatura_nu"
+BQ_TABLE = "powerbi-drive-458204.controle_gastos.fatura_nu"
 
 def download_pdf(bucket_name, file_name):
     storage_client = storage.Client()
